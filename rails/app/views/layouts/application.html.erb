@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>YesPassword</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <header>
+    <a>ヘッダー</a>
+
+    <br>
+    <% current_user =  User.find_by(id: session[:user_id])%>
+    <% if !current_user.nil?%>
+      現在ログイン中です<br>
+      <%= link_to "log out", logout_path, method: "delete"%>
+    <% else %>
+      ログインしていません<br>
+      <%= link_to "log in", login_path%>
+    <% end %>
+  </header>
+
+  <body>
+    <%= yield %>
+  </body>
+</html>

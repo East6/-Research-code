@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Client</title>
+  <!-- Client API を読み込む。自動生成されるので、socket.io.js を作成する必要はない。 -->
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+
+    <script>
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+          alert("ブラウザは，FilePIを機能しているよ"); 
+        }else{
+          alert("ブラウザは，FilePIを機能していないよ");
+        } 
+    </script>
+
+    <form name="myform">
+      <input name="myfile" type="file" />
+    </form>
+    
+    <script>
+      //Form要素を取得する
+      var form = document.forms.myform;
+      //ファイルが読み込まれた時の処理
+      form.myfile.addEventListener('change', function(e) {
+        var result = e.target.files[0];
+
+        //FileReaderのインスタンスを作成する
+        var reader = new FileReader();
+        //読み込んだファイルの中身を取得する
+        reader.readAsText( result );
+        //ファイルの中身を取得後に処理を行う
+        reader.addEventListener( 'load', function() {
+        
+            //ファイルの中身をtextarea内に表示する
+            var data = reader.result
+
+            //-------------------- サーバ側に通信するプログラム
+            // 通信先のサーバを指定する
+            var socket = io('10.0.2.42');
+            //サーバに秘密鍵を送る
+            socket.emit('SSH PrivateKey', { PrivateKey: reader.result });
+            //-------------------- サーバ側に通信するプログラム
+        })
+
+      })
+  </script>
+
+</body>
+</html>
