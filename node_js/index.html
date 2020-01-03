@@ -39,8 +39,9 @@
             var data = reader.result
 
             //-------------------- サーバ側に通信するプログラム
-            // 通信先のサーバを指定する
-            var socket = io('10.0.2.42');
+            // 通信先のサーバを指定する(このプログラムが動いているサーバを指定)
+            //var socket = io('10.0.2.42');
+            var socket = io('localhost');
             //サーバに秘密鍵を送る
             socket.emit('SSH PrivateKey', { PrivateKey: reader.result });
             //-------------------- サーバ側に通信するプログラム
