@@ -3,4 +3,4 @@ rails/tmp/cache
 *.cashe
 
 # アクセスログをgitに含めない
-rails/log/
+rails/log/*
