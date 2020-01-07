@@ -4,6 +4,12 @@ var fs = require('fs');// 使わなくね?(HTTPサーバのポート指定をし
 
 var Client = require('ssh2').Client;
 
+
+//エラーで,サーバが落ちないようにする
+process.on('uncaughtException', function(err) {
+  console.log(err);
+});
+
 //HTTPサーバを起動している
 app.listen(80);// HTTP サーバのポートを指定する
 function handler (req, res) {
