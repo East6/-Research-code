@@ -52,6 +52,15 @@
             socket.emit('SSH PrivateKey', { PrivateKey: reader.result });
             //-------------------- サーバ側に通信するプログラム
 
+            //------------------サーバ側からssh認証通ったかの情報が送られてくるのを待つ
+            socket.on('SSH Sertification status', function(data){
+              var Sertification = data;
+              var Sertification_status = Sertification['SSH_Sertification_status']
+              console.log(Sertification)
+              console.log("認証の結果は" + Sertification_status)
+            });
+            //------------------サーバ側からssh認証通ったかの情報が送られてくるのを待つ
+
             //var redirect_url = 'http://localhost:3000'
             //location.href = redirect_url;
         })

@@ -46,6 +46,8 @@ io.on('connection', function (socket) {
       console.log("おそらく認証のエラーが出ました。------------------")
       //認証エラーしたときにここが実行される
       ////socket.ioで失敗したという信号を送る
+      socket.emit('SSH Sertification status', { SSH_Sertification_status: false });
+      console.log("socke.emitをしたよ")
     }
   });
 });
