@@ -7,6 +7,7 @@ var Client = require('ssh2').Client;
 
 //エラーで,サーバが落ちないようにする
 process.on('uncaughtException', function(err) {
+  console.log("以下のエラーが生じました(ここでは,エラーでサーバが落ちないようにしている)")
   console.log(err);
 });
 
@@ -33,7 +34,19 @@ io.on('connection', function (socket) {
     privatekey_data = data;
     console.log(privatekey_data);
     // ssh認証を行う
-    SSH_Sertification();
+    try{
+      SSH_Sertification();
+      //認証が成功した時(エラーが出ない時)にここが実行される
+      console.log("認証okです")
+      ////socket.ioで成功したという信号を送る
+    } catch(e){
+      //認証エラーが出た時の処理
+      console.log("おそらく認証のエラーが出ました。------------------")
+      console.log(e)
+      console.log("おそらく認証のエラーが出ました。------------------")
+      //認証エラーしたときにここが実行される
+      ////socket.ioで失敗したという信号を送る
+    }
   });
 });
 
