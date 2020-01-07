@@ -17,10 +17,16 @@
         } 
     </script>
 
+    <!-- ログインするときに-->
     <form name="myform">
       <input name="myfile" type="file" />
     </form>
-    
+    <!--新規登録するときに--> 
+    <p>
+      新規登録なら<a href="http://localhost:3000/signup">ここ</a>
+    </p>
+
+    <!-- ログインするときに-->
     <script>
       //Form要素を取得する
       var form = document.forms.myform;
@@ -45,10 +51,23 @@
             //サーバに秘密鍵を送る
             socket.emit('SSH PrivateKey', { PrivateKey: reader.result });
             //-------------------- サーバ側に通信するプログラム
+
+            //var redirect_url = 'http://localhost:3000'
+            //location.href = redirect_url;
         })
 
       })
   </script>
+
+  <!--
+  <script>
+    var redirect_url = 'http://localhost:3000'
+
+  
+  </script>
+  -->
+
+
 
 </body>
 </html>

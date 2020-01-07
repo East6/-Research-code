@@ -1,6 +1,7 @@
 class SessionsController < ApplicationController
 
   def new
+    redirect_to 'http://localhost:80'
   end
 
   def create
