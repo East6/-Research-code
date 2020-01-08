@@ -6,6 +6,12 @@
   <!-- Client API を読み込む。自動生成されるので、socket.io.js を作成する必要はない。 -->
   <script src="/socket.io/socket.io.js"></script>
 </head>
+<header>
+  <div id='status'>
+  </div>
+</header>
+
+
 <body>
 
 
@@ -58,6 +64,11 @@
               var Sertification_status = Sertification['SSH_Sertification_status']
               console.log(Sertification)
               console.log("認証の結果は" + Sertification_status)
+              if(Sertification_status == false){
+                var status = document.getElementById('status');
+                status.insertAdjacentHTML('afterbegin', '認証に失敗しました<br><br>');
+                alert('認証に失敗しました');
+              }
             });
             //------------------サーバ側からssh認証通ったかの情報が送られてくるのを待つ
 
