@@ -1,10 +1,17 @@
 class SessionsController < ApplicationController
 
   def new
-    redirect_to 'http://localhost:80'
+    #redirect_to 'http://localhost:80'
   end
 
+
   def create
+    user = User.find_by(name: params[:session][:name].downcase)
+    #debugger
+    user.login_status = 1
+    user.save
+
+    """
     user = User.find_by(email: params[:session][:email].downcase)
     #if user && user.authenticate(params[:session][:password])
     if user
@@ -15,6 +22,7 @@ class SessionsController < ApplicationController
       # ログイン失敗
       render 'new' #newアクション(singupuページをgetした時の処理)に行く {routeより}
     end
+    """
   end
 
   def destroy

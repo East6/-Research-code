@@ -6,8 +6,12 @@
 
 <!-- form_for指定しているのよくわかっていない -->
 
+<!--このページでユーザ名をpostしているけど，後々使わなくなる予定(node.jsからpostする予定)-->
 <%= form_for(:session, url: login_path) do |f|%>
 
+  <%= f.label :name%>
+  <%= f.text_field :name%>
+  <br>
   <%= f.label :email %>
   <%= f.email_field :email%>
   <br>
