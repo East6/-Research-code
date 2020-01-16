@@ -1,0 +1,9 @@
+デバッグ用の,ページ
+
+<%= form_for(:session, url: login_status_path) do |f|%>
+
+  <%= f.label :name%>
+  <%= f.text_field :name%>
+  <br>
+  <%= f.submit "確かめよう"%>
+<%end%>
