@@ -64,7 +64,12 @@
               var Sertification_status = Sertification['SSH_Sertification_status']
               console.log(Sertification)
               console.log("認証の結果は" + Sertification_status)
-              if(Sertification_status == false){
+              if(Sertification_status == true){
+                alert(Sertification['name'] + '認証に成功しました')
+                //本当は  POSTリダイレクト がしたかった
+                //Sertification['name']  を 3000/login-status  に POST
+                location.href = 'http://localhost:3000/login-status'
+              }else if(Sertification_status == false){
                 var status = document.getElementById('status');
                 status.insertAdjacentHTML('afterbegin', '認証に失敗しました<br><br>');
                 alert('認証に失敗しました');

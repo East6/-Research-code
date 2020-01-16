@@ -2,7 +2,7 @@ class SessionsController < ApplicationController
   skip_before_action :verify_authenticity_token # CSRFtokenでsessionを使っているので，切る
 
   def new
-    #redirect_to 'http://localhost:80'
+    redirect_to 'http://localhost:80'
   end
 
 

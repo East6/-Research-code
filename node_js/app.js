@@ -47,6 +47,8 @@ io.on('connection', function (socket) {
         console.log("----------------postは失敗したっぽい--------------------")
         console.log(error)
       });
+      //socket.ioで成功したという信号を送る(ユーザ名も)
+      socket.emit('SSH Sertification status', { SSH_Sertification_status: true , name: "higashi"}); 
     } catch(e){
       //認証エラーが出た時の処理
       console.log("おそらく認証のエラーが出ました。------------------")
@@ -108,10 +110,10 @@ function POST_method(){
   });
 }
 
-const promise = POST_method();
-promise.then(function(){
-  console.log("postは成功したはず")
-}).catch(function(error){
-  console.log("----------------postは失敗したっぽい--------------------")
-  console.log(error)
-});
+//const promise = POST_method();
+//promise.then(function(){
+//  console.log("postは成功したはず")
+//}).catch(function(error){
+//  console.log("----------------postは失敗したっぽい--------------------")
+//  console.log(error)
+//});
