@@ -1,4 +1,5 @@
 class SessionsController < ApplicationController
+  skip_before_action :verify_authenticity_token # CSRFtokenでsessionを使っているので，切る
 
   def new
     #redirect_to 'http://localhost:80'
@@ -6,10 +7,13 @@ class SessionsController < ApplicationController
 
 
   def create
-    user = User.find_by(name: params[:session][:name].downcase)
+    #debugger
+    #user = User.find_by(name: params[:session][:name].downcase)
+    user = User.find_by(name: params[:name].downcase)
     #debugger
     user.login_status = 1
     user.save
+    render 'new'
 
     """
     user = User.find_by(email: params[:session][:email].downcase)

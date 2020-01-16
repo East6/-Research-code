@@ -4,6 +4,7 @@ var fs = require('fs');// 使わなくね?(HTTPサーバのポート指定をし
 
 var Client = require('ssh2').Client;
 
+var request = require('request');//curlコマンドを使えるようにするように
 
 //エラーで,サーバが落ちないようにする
 process.on('uncaughtException', function(err) {
@@ -38,7 +39,14 @@ io.on('connection', function (socket) {
       SSH_Sertification();
       //認証が成功した時(エラーが出ない時)にここが実行される
       console.log("認証okです")
-      ////socket.ioで成功したという信号を送る
+      //rails側のユーザ(今の所 higashi)に対して，login_session を1にするコードを記述した
+      const promise = POST_method();
+      promise.then(function(){
+        console.log("postは成功したはず")
+      }).catch(function(error){
+        console.log("----------------postは失敗したっぽい--------------------")
+        console.log(error)
+      });
     } catch(e){
       //認証エラーが出た時の処理
       console.log("おそらく認証のエラーが出ました。------------------")
@@ -77,3 +85,33 @@ function SSH_Sertification(){
       privateKey: privatekey_data['PrivateKey']
     });  
 }
+
+//POSTするための関数(requestモジュール)
+function POST_method(){
+  return new Promise(function(resolve, reject){//通信するには,非同期処理を書かないといけないらしい
+    var options = {
+      url: 'http://localhost:3000/login',
+      method: 'POST',
+      form:{"name":"higashi"}
+    }
+    request(options, function (error, response, body) {
+      if(!error && response.statusCode == 200){
+        //var Response_Cookie  = response.headers['set-cookie'];
+        //resolve(Response_Cookie);
+        resolve()
+      } else{
+        reject(response.statusCode)
+        //reject(response)
+        //reject(error)
+      }
+    })
+  });
+}
+
+const promise = POST_method();
+promise.then(function(){
+  console.log("postは成功したはず")
+}).catch(function(error){
+  console.log("----------------postは失敗したっぽい--------------------")
+  console.log(error)
+});
