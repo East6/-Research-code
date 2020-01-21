@@ -23,7 +23,9 @@ function SSH_Sertification(){
         }).on('data', function(data) {
           console.log('OUTPUT: ' + data);
         });
-        //stream.end('ls -l\nexit\n');
+        //sshで命令する方法
+        //stream.write(`コマンド\n`)
+        stream.end('exit\n');//connectionを切る
       });
     }).connect({
       host: '10.0.2.53',
