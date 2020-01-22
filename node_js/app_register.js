@@ -25,12 +25,13 @@ function SSH_Sertification(){
         });
         //sshで命令する方法
         //stream.write(`コマンド\n`)
+        stream.write('whoami\n')
         stream.end('exit\n');//connectionを切る
       });
     }).connect({
       host: '10.0.2.53',
       port: 22,
-      username: 'ie-user',
+      username: 'root',
       //privateKey: require('fs').readFileSync('~/.ssh/ToGakka2/id_rsa')
       privateKey: require('fs').readFileSync('/Users/yonaminehigashi/.ssh/ToGakka2/id_rsa')
     });  
