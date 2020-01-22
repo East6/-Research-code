@@ -1,5 +1,12 @@
-var app = require('http').createServer(handler)
-var io = require('socket.io')(app);
+var express = require('express');
+var app = express();
+var path = require('path');
+//下の3行はexpressでpostされたデータを扱いたいから
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+//var io = require('socket.io')(app);
 var fs = require('fs');// 使わなくね?(HTTPサーバのポート指定をしたら)
 
 var Client = require('ssh2').Client;
@@ -10,40 +17,22 @@ process.on('uncaughtException', function(err) {
   console.log(err);
 });
 
-//HTTPサーバを起動している
-app.listen(80);// HTTP サーバのポートを指定する
-function handler (req, res) {
-  fs.readFile(__dirname + '/register.html',
-  function (err, data) {
-    if (err) {
-      res.writeHead(500);
-      return res.end('Error loading index.html');
-    }
-    res.writeHead(200);
-    res.end(data);
-  });
-  if(req.method === 'POST') {//POSTメソッドがきた時に実行される
-    console.log("post情報が送られてきたよ");
 
-    //-------------------------------------[このサイトから参考(理解していない..)](https://algorithm.joho.info/programming/javascript/node-js-post/)
-    var body = '';
-    // data受信イベントの発生時に断片データ(chunk)を取得
-    // body 変数に連結
-    req.on('data', function(chunk) {
-        body += chunk;
-    });
-    // 受信完了(end)イベント発生時
-    req.on('end', function() {
-      console.log(body);
-      res.end();
-    });
-    //---------------------------------------
-
-  }
-}
+//expressを用いて，get,postメソッドをさばく
+app.get('/', function (req, res) {
+    //res.send('Hello World!');
+    res.sendFile(path.join(__dirname + '/register.html'));
+});
+app.post('/', function (reqest, response) {
+    console.log(reqest.body);
+    console.log(reqest.body.username);
+    //res.sendFile(path.join(__dirname + '/register.html'));
+});
+app.listen(80, function () {
+});
 
 //ssh認証をするための関数(ssh2モジュール)
-function SSH_Sertification(){
+function SSH_Sertification(username){
     var conn = new Client();
     conn.on('ready', function() {
       console.log('Client :: ready');
@@ -58,7 +47,8 @@ function SSH_Sertification(){
         //sshで命令する方法
         //stream.write(`コマンド\n`)
         stream.write('whoami\n')
-        stream.write('useradd tasikame2\n');
+        //stream.write('useradd tasikame2\n');
+        stream.write('useradd ' + username + '\n');
         stream.end('exit\n');//connectionを切る
       });
     }).connect({
@@ -70,4 +60,4 @@ function SSH_Sertification(){
     });  
 }
 
-SSH_Sertification();
+//SSH_Sertification("tasikame3");
