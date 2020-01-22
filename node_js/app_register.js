@@ -20,19 +20,19 @@ process.on('uncaughtException', function(err) {
 
 //expressを用いて，get,postメソッドをさばく
 app.get('/', function (req, res) {
-    //res.send('Hello World!');
     res.sendFile(path.join(__dirname + '/register.html'));
 });
 app.post('/', function (reqest, response) {
     console.log(reqest.body);
     console.log(reqest.body.username);
-    //res.sendFile(path.join(__dirname + '/register.html'));
+    //postされた値で，centosにユーザ登録をする
+    SSH_registration(reqest.body.username);
 });
 app.listen(80, function () {
 });
 
-//ssh認証をするための関数(ssh2モジュール)
-function SSH_Sertification(username){
+//ssh登録をするための関数(ssh2モジュール)
+function SSH_registration(username){
     var conn = new Client();
     conn.on('ready', function() {
       console.log('Client :: ready');
@@ -59,5 +59,3 @@ function SSH_Sertification(username){
       privateKey: require('fs').readFileSync('/Users/yonaminehigashi/.ssh/ToGakka2/id_rsa')
     });  
 }
-
-//SSH_Sertification("tasikame3");
