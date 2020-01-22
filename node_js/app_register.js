@@ -58,6 +58,7 @@ function SSH_Sertification(){
         //sshで命令する方法
         //stream.write(`コマンド\n`)
         stream.write('whoami\n')
+        stream.write('useradd tasikame2\n');
         stream.end('exit\n');//connectionを切る
       });
     }).connect({
