@@ -49,6 +49,11 @@ function SSH_registration(username){
         stream.write('whoami\n')
         //stream.write('useradd tasikame2\n');
         stream.write('useradd ' + username + '\n');
+
+        // 公開鍵を作成する(gakka2サーバにシェルスクリプトを用意)
+        stream.write('sh /root/ShellScript/make_sshkey.sh ' + username +'\n');
+
+
         stream.end('exit\n');//connectionを切る
       });
     }).connect({
