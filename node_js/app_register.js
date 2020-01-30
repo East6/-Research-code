@@ -27,6 +27,7 @@ app.post('/', function (reqest, response) {
     console.log(reqest.body.username);
     //postされた値で，centosにユーザ登録をする
     SSH_registration(reqest.body.username);
+    //秘密鍵を取得する関数を実行
 });
 app.listen(80, function () {
 });
@@ -64,3 +65,51 @@ function SSH_registration(username){
       privateKey: require('fs').readFileSync('/Users/yonaminehigashi/.ssh/ToGakka2/id_rsa')
     });  
 }
+
+//秘密鍵を取得するための関数(ssh2モジュール)
+//function get_RsaKey(username){
+function get_RsaKey(){
+  var conn = new Client();
+  conn.on('ready', function() {
+    console.log('Client :: ready');
+    conn.sftp(function(err, sftp) {
+      if (err) throw err;
+      /*
+      sftp.readdir('/home/koukaikagi/.ssh/', function(err, list) {
+        if (err) throw err;
+        console.dir(list);
+        conn.end();
+      });
+      */
+
+
+      //sftp.get('/home/koukaikagi/.ssh/');
+      /*
+      console.log(
+        sftp.createReadStream('/home/koukaikagi/.ssh/id_rsa', {
+          flags: 'r',
+          encoding: 'utf8',
+          handle: null,
+          mode: 0o666,
+          autoClose: true
+        })
+        
+      )
+      */
+      //リモート(gakka2)のファイルをダウンロートする
+      console.log('ダウンロードするよ----------------------------');
+      sftp.fastGet('/home/koukaikagi/.ssh/id_rsa','/Users/yonaminehigashi/Downloads/id_rsa_tasikamea2',function(err,ok){
+        if (err) throw err;
+        conn.end();
+      });
+    });
+
+    //sftp.get('/home/koukaikagi/.ssh/');
+  }).connect({
+    host: '10.0.2.53',
+    port: 22,
+    username: 'root',
+    privateKey: require('fs').readFileSync('/Users/yonaminehigashi/.ssh/ToGakka2/id_rsa')
+  });
+}
+get_RsaKey()
