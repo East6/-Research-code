@@ -61,8 +61,8 @@ function SSH_registration(username){
       host: '10.0.2.53',
       port: 22,
       username: 'root',
-      //privateKey: require('fs').readFileSync('~/.ssh/ToGakka2/id_rsa')
-      privateKey: require('fs').readFileSync('/Users/yonaminehigashi/.ssh/ToGakka2/id_rsa')
+      privateKey: require('fs').readFileSync('/root/.ssh/ToGakka2/id_rsa')
+      //privateKey: require('fs').readFileSync('/Users/yonaminehigashi/.ssh/ToGakka2/id_rsa')
     });  
 }
 
@@ -74,42 +74,18 @@ function get_RsaKey(){
     console.log('Client :: ready');
     conn.sftp(function(err, sftp) {
       if (err) throw err;
-      /*
-      sftp.readdir('/home/koukaikagi/.ssh/', function(err, list) {
-        if (err) throw err;
-        console.dir(list);
-        conn.end();
-      });
-      */
-
-
-      //sftp.get('/home/koukaikagi/.ssh/');
-      /*
-      console.log(
-        sftp.createReadStream('/home/koukaikagi/.ssh/id_rsa', {
-          flags: 'r',
-          encoding: 'utf8',
-          handle: null,
-          mode: 0o666,
-          autoClose: true
-        })
-        
-      )
-      */
       //リモート(gakka2)のファイルをダウンロートする
       console.log('ダウンロードするよ----------------------------');
-      sftp.fastGet('/home/koukaikagi/.ssh/id_rsa','/Users/yonaminehigashi/Downloads/id_rsa_tasikamea2',function(err,ok){
+      sftp.fastGet('/home/koukaikagi/.ssh/id_rsa','/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/id_rsa_tasikame',function(err){
         if (err) throw err;
         conn.end();
       });
     });
-
-    //sftp.get('/home/koukaikagi/.ssh/');
   }).connect({
     host: '10.0.2.53',
     port: 22,
     username: 'root',
-    privateKey: require('fs').readFileSync('/Users/yonaminehigashi/.ssh/ToGakka2/id_rsa')
+    privateKey: require('fs').readFileSync('/root/.ssh/ToGakka2/id_rsa')
   });
 }
 get_RsaKey()
