@@ -1,12 +1,16 @@
-var express = require('express');
-var app = express();
+//var express = require('express');
+//var app = express();
+const app = require('express')();
+//socket.ioを用いるために
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
 var path = require('path');
 //下の3行はexpressでpostされたデータを扱いたいから
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-//var io = require('socket.io')(app);
 var fs = require('fs');// 使わなくね?(HTTPサーバのポート指定をしたら)
 
 var Client = require('ssh2').Client;
@@ -26,14 +30,33 @@ app.post('/', function (reqest, response) {
     console.log(reqest.body);
     console.log(reqest.body.username);
 
-    //-------------------------- 下二つの関数を同期的に処理したい
+    //-------------------------- socket.io を用いることで，SSH_registration()関数 の .stream.write の処理が終わったとに，　　get_RsaKey() 関数を実行している
     //postされた値で，centosにユーザ登録をする
     SSH_registration(reqest.body.username);
-    //秘密鍵を取得する関数を実行
-    get_RsaKey(reqest.body.username,'/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + reqest.body.username + '_rsa')
+
+    //SSH_registractionのサーバ側の処理が終わったのを通知
+    io.on('connection', function(socket){
+      //メッセージを受けとる準備
+      console.log("----------------メッセージを受けとる準備をしている----------------")
+
+      //メッセージを受け取った時の処理
+      socket.on('message', function(data){
+        //console.log(data);
+        if(data['finish_process'] == true){
+          console.log('-------------------------------同期的に処理ができているか確かめ-------------------------------');
+          //秘密鍵を取得する関数を実行
+          get_RsaKey(reqest.body.username,'/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + reqest.body.username + '_rsa')
+          // 受け取ったことを通知(コネクションを切ってもらう)
+          socket.emit('confirm communicate',{result: true})
+        }else{
+          console.log('おそらく,useradd が失敗しました(useradd 成功したよ)通知がturu　でない')
+        }
+      })
+
+    });
 
 });
-app.listen(80, function () {
+http.listen(80, function () {//socket.ioを用いるために,「app」を「http」に変更
 });
 
 //ssh登録をするための関数(ssh2モジュール)

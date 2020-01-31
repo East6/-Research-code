@@ -22,4 +22,7 @@ chmod 600 /home/${1}/.ssh/authorized_keys
 chown ${1}:${1} /home/${1}/.ssh
 chown ${1}:${1} /home/${1}/.ssh/authorized_keys
 
+#処理が終わったことを，通知(同期的に処理させるために)
+node /root/Node_js/notice_FinishSHELL.js
+
 exit 0
