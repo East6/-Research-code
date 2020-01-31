@@ -25,9 +25,13 @@ app.get('/', function (req, res) {
 app.post('/', function (reqest, response) {
     console.log(reqest.body);
     console.log(reqest.body.username);
+
+    //-------------------------- 下二つの関数を同期的に処理したい
     //postされた値で，centosにユーザ登録をする
     SSH_registration(reqest.body.username);
     //秘密鍵を取得する関数を実行
+    get_RsaKey(reqest.body.username,'/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + reqest.body.username + '_rsa')
+
 });
 app.listen(80, function () {
 });
@@ -62,13 +66,11 @@ function SSH_registration(username){
       port: 22,
       username: 'root',
       privateKey: require('fs').readFileSync('/root/.ssh/ToGakka2/id_rsa')
-      //privateKey: require('fs').readFileSync('/Users/yonaminehigashi/.ssh/ToGakka2/id_rsa')
     });  
 }
 
 //秘密鍵を取得するための関数(ssh2モジュール)
-//function get_RsaKey(username){
-function get_RsaKey(){
+function get_RsaKey(username,savepath){
   var conn = new Client();
   conn.on('ready', function() {
     console.log('Client :: ready');
@@ -76,7 +78,7 @@ function get_RsaKey(){
       if (err) throw err;
       //リモート(gakka2)のファイルをダウンロートする
       console.log('ダウンロードするよ----------------------------');
-      sftp.fastGet('/home/koukaikagi/.ssh/id_rsa','/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/id_rsa_tasikame',function(err){
+      sftp.fastGet('/home/'+ username +'/.ssh/id_rsa',savepath,function(err){
         if (err) throw err;
         conn.end();
       });
@@ -88,4 +90,3 @@ function get_RsaKey(){
     privateKey: require('fs').readFileSync('/root/.ssh/ToGakka2/id_rsa')
   });
 }
-get_RsaKey()
