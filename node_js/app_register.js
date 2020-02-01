@@ -48,6 +48,8 @@ app.post('/', function (reqest, response) {
           get_RsaKey(reqest.body.username,'/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + reqest.body.username + '_rsa')
           // 受け取ったことを通知(コネクションを切ってもらう)
           socket.emit('confirm communicate',{result: true})
+          //リダイレクト
+          response.redirect('/download');
         }else{
           console.log('おそらく,useradd が失敗しました(useradd 成功したよ)通知がturu　でない')
         }
@@ -56,6 +58,13 @@ app.post('/', function (reqest, response) {
     });
 
 });
+
+//ダウンロードするパス
+app.get('/download',function (req,res){
+  const public_file = '/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + 'koukaikagi20_rsa'
+  res.download(public_file);
+});
+
 http.listen(80, function () {//socket.ioを用いるために,「app」を「http」に変更
 });
 
