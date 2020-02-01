@@ -45,9 +45,19 @@ app.post('/', function (reqest, response) {
         if(data['finish_process'] == true){
           console.log('-------------------------------同期的に処理ができているか確かめ-------------------------------');
           //秘密鍵を取得する関数を実行
+          console.log("-------------------------------処理の流れ1---------------------------------")
           get_RsaKey(reqest.body.username,'/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + reqest.body.username + '_rsa')
           // 受け取ったことを通知(コネクションを切ってもらう)
+          console.log("-------------------------------処理の流れ2---------------------------------")
+
           socket.emit('confirm communicate',{result: true})
+          console.log("-------------------------------処理の流れ3---------------------------------")
+          // クッキーに登録したユーザ名を保存
+          response.cookie("username",reqest.body.username);
+          console.log("-------------------------------処理の流れ4---------------------------------")
+          // クッキー保存を適応させる
+          //response.send();
+          console.log("-------------------------------処理の流れ5---------------------------------")
           //リダイレクト
           response.redirect('/download');
         }else{
@@ -61,7 +71,9 @@ app.post('/', function (reqest, response) {
 
 //ダウンロードするパス
 app.get('/download',function (req,res){
-  const public_file = '/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + 'koukaikagi20_rsa'
+
+  console.log('--------------------------------------------' + req.cookies.username + '_rsa')
+  const public_file = '/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + req.cookies.username + '_rsa'
   res.download(public_file);
 });
 
