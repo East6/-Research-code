@@ -2,7 +2,8 @@ class SessionsController < ApplicationController
   skip_before_action :verify_authenticity_token # CSRFtokenでsessionを使っているので，切る
 
   def new
-    redirect_to 'http://localhost:80'
+    # 公開鍵暗号方式によるssh認証ページ(node.js)にリダイレクト
+    redirect_to 'http://10.0.2.42:80'
   end
 
 
