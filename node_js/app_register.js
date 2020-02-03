@@ -38,22 +38,35 @@ app.post('/', function (reqest, response) {
   //postされた値で，centosにユーザ登録をする
   SSH_registration(reqest.body.username);
 
-  //SSH_registractionのサーバ側の処理が終わったのを通知
+  //SSH_registractionのサーバ側の処理が終わったのを通知 [同期的に処理するために]
   io.on('connection', function(socket){
     //メッセージを受けとる準備
     console.log("----------------メッセージを受けとる準備をしている----------------")
 
     //メッセージを受け取った時の処理
     socket.on('message', function(data){
-        //同期処理をしたい
-        async function douki_prosess(){
-          //代入したら,同期的に処理をしているらしいから，代入している
-          const get = await get_RsaKey(reqest.body.username,'/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + reqest.body.username + '_rsa');
-          const emit = await socket.emit('confirm communicate',{result: true});
-          //const cookie = await response.cookie("username",reqest.body.username);
-          const redirect = await response.redirect('/cookie');
-        }
-        douki_prosess();
+      //同期処理をしたい
+      async function douki_prosess(){
+        //代入したら,同期的に処理をしているらしいから，代入している
+        const get = await get_RsaKey(reqest.body.username,'/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + reqest.body.username + '_rsa');
+        const emit = await socket.emit('confirm communicate',{result: true});
+      }
+      douki_prosess();
+
+
+      // gakka2 -> gakka1 に秘密鍵がダウンロードされていたら, リダイレクトする
+      //再帰関数
+      function saiki_redirect(){
+        setTimeout(() => {
+          console.log("再帰ウェー")
+          if(fs.existsSync('/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + reqest.body.username + '_rsa') == true){
+            response.redirect('/cookie');
+          }else{
+            saiki_redirect()
+          }
+        },2000);
+      }
+      saiki_redirect();
     })
 
   });
