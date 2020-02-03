@@ -1,6 +1,9 @@
-//var express = require('express');
-//var app = express();
 const app = require('express')();
+
+//cookieをよば出すために
+const cookieParser = require('cookie-parser')
+app.use(cookieParser())
+
 //socket.ioを用いるために
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
@@ -27,51 +30,44 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/register.html'));
 });
 app.post('/', function (reqest, response) {
-    console.log(reqest.body);
-    console.log(reqest.body.username);
+  console.log(reqest.body);
+  console.log(reqest.body.username);
 
-    //-------------------------- socket.io を用いることで，SSH_registration()関数 の .stream.write の処理が終わったとに，　　get_RsaKey() 関数を実行している
-    //postされた値で，centosにユーザ登録をする
-    SSH_registration(reqest.body.username);
+  // postの値をcookieに保存する
+  response.cookie("username", reqest.body.username);
+  //postされた値で，centosにユーザ登録をする
+  SSH_registration(reqest.body.username);
 
-    //SSH_registractionのサーバ側の処理が終わったのを通知
-    io.on('connection', function(socket){
-      //メッセージを受けとる準備
-      console.log("----------------メッセージを受けとる準備をしている----------------")
+  //SSH_registractionのサーバ側の処理が終わったのを通知
+  io.on('connection', function(socket){
+    //メッセージを受けとる準備
+    console.log("----------------メッセージを受けとる準備をしている----------------")
 
-      //メッセージを受け取った時の処理
-      socket.on('message', function(data){
-        //console.log(data);
-        if(data['finish_process'] == true){
-          console.log('-------------------------------同期的に処理ができているか確かめ-------------------------------');
-          //秘密鍵を取得する関数を実行
-          console.log("-------------------------------処理の流れ1---------------------------------")
-          get_RsaKey(reqest.body.username,'/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + reqest.body.username + '_rsa')
-          // 受け取ったことを通知(コネクションを切ってもらう)
-          console.log("-------------------------------処理の流れ2---------------------------------")
-
-          socket.emit('confirm communicate',{result: true})
-          console.log("-------------------------------処理の流れ3---------------------------------")
-          // クッキーに登録したユーザ名を保存
-          response.cookie("username",reqest.body.username);
-          console.log("-------------------------------処理の流れ4---------------------------------")
-          // クッキー保存を適応させる
-          //response.send();
-          console.log("-------------------------------処理の流れ5---------------------------------")
-          //リダイレクト
-          response.redirect('/download');
-        }else{
-          console.log('おそらく,useradd が失敗しました(useradd 成功したよ)通知がturu　でない')
+    //メッセージを受け取った時の処理
+    socket.on('message', function(data){
+        //同期処理をしたい
+        async function douki_prosess(){
+          //代入したら,同期的に処理をしているらしいから，代入している
+          const get = await get_RsaKey(reqest.body.username,'/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + reqest.body.username + '_rsa');
+          const emit = await socket.emit('confirm communicate',{result: true});
+          //const cookie = await response.cookie("username",reqest.body.username);
+          const redirect = await response.redirect('/cookie');
         }
-      })
+        douki_prosess();
+    })
 
-    });
+  });
 
+});
+//cookieを反映させるために
+app.get('/cookie',function(res,req){
+  req.redirect('/download');
 });
 
 //ダウンロードするパス
 app.get('/download',function (req,res){
 
+  console.log("------------------------ブラウザに秘密鍵をダウンロード------------------------");
   console.log('--------------------------------------------' + req.cookies.username + '_rsa')
   const public_file = '/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + req.cookies.username + '_rsa'
   res.download(public_file);
@@ -114,14 +110,14 @@ function SSH_registration(username){
 }
 
 //秘密鍵を取得するための関数(ssh2モジュール)
-function get_RsaKey(username,savepath){
+async function get_RsaKey(username,savepath){
   var conn = new Client();
   conn.on('ready', function() {
     console.log('Client :: ready');
     conn.sftp(function(err, sftp) {
       if (err) throw err;
       //リモート(gakka2)のファイルをダウンロートする
-      console.log('ダウンロードするよ----------------------------');
+      console.log('----------------------gakka2からgakka1にダウンロードするよ----------------------------');
       sftp.fastGet('/home/'+ username +'/.ssh/id_rsa',savepath,function(err){
         if (err) throw err;
         conn.end();
