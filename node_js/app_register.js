@@ -81,40 +81,19 @@ app.get('/cookie',function(req,res){
 
 //ダウンロードするパス
 app.get('/download',function (req,res){
-  //io.on('connection', function(socket){
     console.log("------------------------ブラウザに秘密鍵をダウンロード------------------------");
     console.log('--------------------------------------------' + req.cookies.username + '_rsa')
     const praivate_file = '/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + req.cookies.username + '_rsa'
     
 
     res.cookie('redirect', true);
-    //res.download(praivate_file);////////////////////////////////////////////////////////////////////////////////////////
 
-    //res.set({
-    //  'Content-Type': 'text/plain',
-    //  'Location': 'http://10.0.2.42:3000/login-status'
-    //});
-
-    //res.writeHead(302,  {Location: "http://teamtreehouse.com"})
-
-
-    //rails側に,登録す
+    //rails側に,登録する
     const promise = POST_method(req);
     promise.then(function(){
       console.log("postは成功したはず")
 
-      //res.redirect(302,'http://10.0.2.42:3000/login-status')///////////////////////////////////////////////////////////////////////////////////////////////////////
       res.download(praivate_file);
-
-      ////res.download(praivate_file);
-      //res.end(praivate_file);
-
-    //　認証ページへリダイレクトするために (res. は一回しか使えない!) websocketを用いる
-    //io.on('connection', function(socket){
-    //  //クライアント(javascrpt)にデートォ送信
-    //  socket.emit('redirect call',{redirect_call:true})
-    //  
-    //})
 
     }).catch(function(error){
       console.log("----------------postは失敗したっぽい--------------------")
@@ -122,12 +101,6 @@ app.get('/download',function (req,res){
     });
   //})
 });
-
-//railsの認証ページへのリダイレクト用のpath
-//app.get('redirect_rails',function (req,res){
-//  console.log("-------------------------認証ページへリダイレクトする--------------------------");
-//  res.redirect(302,'http://10.0.2.42:3000/login-status')
-//});
 
 http.listen(81, function () {//socket.ioを用いるために,「app」を「http」に変更
 });

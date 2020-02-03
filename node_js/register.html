@@ -27,32 +27,6 @@
 </form>
 
 <script>
-
-  /*
-  var socket = io('http://10.0.2.42:81/download');
-  //socket.emit('message',{ finish_process: true});
-  function socket_io(){
-    console.log("------------------------------scoket_io関数か実行されています---------------------------------")
-    socket.on('redirect call', function(data){
-      console.log("-------------socket.ioの中が実行されています--------------");
-      consol.log(data["redirect_call"]);
-    });
-    setTimeout('socket_io();', 1500);
-  }
-  //1.5秒ごとに実行
-  setTimeout('socket_io();', 1500);
-  //socket.on('redirect call', function(data){
-  //  console.log("-------------socket.ioの中が実行されています--------------");
-  //  consol.log(data["redirect_call"]);
-  //});
-    console.log("-------------socket.ioの外が実行されています--------------");
-  */
-
-  /*
-  function redirect(){
-    
-  }
-  */
   console.log(document.cookie)
   console.log($.cookie('tasikame'));
   console.log($.cookie('redirect'));
@@ -69,8 +43,6 @@
     }
   }
   setTimeout('redirect();', 1500); 
-
-
 </script>
 
 

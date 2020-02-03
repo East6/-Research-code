@@ -109,11 +109,3 @@ function POST_method(){
     })
   });
 }
-
-//const promise = POST_method();
-//promise.then(function(){
-//  console.log("postは成功したはず")
-//}).catch(function(error){
-//  console.log("----------------postは失敗したっぽい--------------------")
-//  console.log(error)
-//});
