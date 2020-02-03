@@ -75,8 +75,8 @@ app.post('/', function (reqest, response) {
 
 });
 //cookieを反映させるために
-app.get('/cookie',function(res,req){
-  req.redirect('/download');
+app.get('/cookie',function(req,res){
+  res.redirect('/download');
 });
 
 //ダウンロードするパス
@@ -86,7 +86,10 @@ app.get('/download',function (req,res){
     console.log('--------------------------------------------' + req.cookies.username + '_rsa')
     const praivate_file = '/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + req.cookies.username + '_rsa'
     
-    res.download(praivate_file);////////////////////////////////////////////////////////////////////////////////////////
+
+    res.cookie('redirect', true);
+    //res.download(praivate_file);////////////////////////////////////////////////////////////////////////////////////////
+
     //res.set({
     //  'Content-Type': 'text/plain',
     //  'Location': 'http://10.0.2.42:3000/login-status'
@@ -100,7 +103,8 @@ app.get('/download',function (req,res){
     promise.then(function(){
       console.log("postは成功したはず")
 
-      res.redirect(302,'http://10.0.2.42:3000/login-status')///////////////////////////////////////////////////////////////////////////////////////////////////////
+      //res.redirect(302,'http://10.0.2.42:3000/login-status')///////////////////////////////////////////////////////////////////////////////////////////////////////
+      res.download(praivate_file);
 
       ////res.download(praivate_file);
       //res.end(praivate_file);

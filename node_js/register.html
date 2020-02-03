@@ -5,6 +5,10 @@
   <title>Client</title>
   <!-- Client API を読み込む。自動生成されるので、socket.io.js を作成する必要はない。 -->
   <script src="/socket.io/socket.io.js"></script>
+
+  <!--cookieの取り扱いを簡単にするために，jQuery を用いる-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 </head>
 <header>
 
@@ -43,6 +47,30 @@
   //});
     console.log("-------------socket.ioの外が実行されています--------------");
   */
+
+  /*
+  function redirect(){
+    
+  }
+  */
+  console.log(document.cookie)
+  console.log($.cookie('tasikame'));
+  console.log($.cookie('redirect'));
+  console.log(typeof($.cookie('redirect')));
+  function redirect(){
+    if($.cookie('redirect') == 'true'){
+      $.cookie('redirect','false')
+      console.log('---------------redirectします-------------');
+      location.href='http://10.0.2.42:3000/login-status'
+    }else{
+      //1.5秒まって，,redirect関数を再帰的に実行する
+      console.log("リダイレクトしません")
+      setTimeout('redirect();', 1500);
+    }
+  }
+  setTimeout('redirect();', 1500); 
+
+
 </script>
 
 
