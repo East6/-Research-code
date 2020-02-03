@@ -18,6 +18,8 @@ var fs = require('fs');// 使わなくね?(HTTPサーバのポート指定をし
 
 var Client = require('ssh2').Client;
 
+var request = require('request');//curlコマンドを使えるようにするように
+
 //エラーで,サーバが落ちないようにする
 process.on('uncaughtException', function(err) {
   console.log("以下のエラーが生じました(ここでは,エラーでサーバが落ちないようにしている)")
@@ -79,12 +81,49 @@ app.get('/cookie',function(res,req){
 
 //ダウンロードするパス
 app.get('/download',function (req,res){
+  //io.on('connection', function(socket){
+    console.log("------------------------ブラウザに秘密鍵をダウンロード------------------------");
+    console.log('--------------------------------------------' + req.cookies.username + '_rsa')
+    const praivate_file = '/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + req.cookies.username + '_rsa'
+    
+    res.download(praivate_file);////////////////////////////////////////////////////////////////////////////////////////
+    //res.set({
+    //  'Content-Type': 'text/plain',
+    //  'Location': 'http://10.0.2.42:3000/login-status'
+    //});
 
-  console.log("------------------------ブラウザに秘密鍵をダウンロード------------------------");
-  console.log('--------------------------------------------' + req.cookies.username + '_rsa')
-  const public_file = '/home/ie-user/WEB-Service/put__sshlogin-for_browser__webservice-password_login/node_js/temporary_key/' + req.cookies.username + '_rsa'
-  res.download(public_file);
+    //res.writeHead(302,  {Location: "http://teamtreehouse.com"})
+
+
+    //rails側に,登録す
+    const promise = POST_method(req);
+    promise.then(function(){
+      console.log("postは成功したはず")
+
+      res.redirect(302,'http://10.0.2.42:3000/login-status')///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      ////res.download(praivate_file);
+      //res.end(praivate_file);
+
+    //　認証ページへリダイレクトするために (res. は一回しか使えない!) websocketを用いる
+    //io.on('connection', function(socket){
+    //  //クライアント(javascrpt)にデートォ送信
+    //  socket.emit('redirect call',{redirect_call:true})
+    //  
+    //})
+
+    }).catch(function(error){
+      console.log("----------------postは失敗したっぽい--------------------")
+      console.log(error)
+    });
+  //})
 });
+
+//railsの認証ページへのリダイレクト用のpath
+//app.get('redirect_rails',function (req,res){
+//  console.log("-------------------------認証ページへリダイレクトする--------------------------");
+//  res.redirect(302,'http://10.0.2.42:3000/login-status')
+//});
 
 http.listen(81, function () {//socket.ioを用いるために,「app」を「http」に変更
 });
@@ -141,5 +180,31 @@ async function get_RsaKey(username,savepath){
     port: 22,
     username: 'root',
     privateKey: require('fs').readFileSync('/root/.ssh/ToGakka2/id_rsa')
+  });
+}
+
+//POSTするための関数(requestモジュール)
+///rails側で，ユーザを作成してもらう
+function POST_method(req){
+  //デバッグ
+  console.log("----------------------------postする値は------------------------------");
+  console.log(req.cookies.username)
+  return new Promise(function(resolve, reject){//通信するには,非同期処理を書かないといけないらしい
+    var options = {
+      url: 'http://localhost:3000/users',
+      method: 'POST',
+      form:{"name":req.cookies.username}
+    }
+    request(options, function (error, response, body) {
+      if(!error && 200<=response.statusCode<300){
+        //var Response_Cookie  = response.headers['set-cookie'];
+        //resolve(Response_Cookie);
+        resolve()
+      } else{
+        reject(response.statusCode)
+        //reject(response)
+        //reject(error)
+      }
+    })
   });
 }

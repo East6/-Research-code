@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  skip_before_action :verify_authenticity_token # CSRFtokenでsessionを使っているので，切る
 
   #show　アクションはログインしているユーザだけ，実行できるようにする
   def logged_in_user #ログインしているユーザか確認
@@ -31,14 +32,21 @@ class UsersController < ApplicationController
 
   # /user　へのpostをすると,createアクションが呼ばられうらしい
   def create
-    @user = User.new(user_params)
-    if @user.save
-      #ユーザをセーブ(新規登録?)できた時の処理を書く
-      session[:user_id] = @user.id# 登録した際に，ログインするようにする
-      redirect_to user_url(@user)   # ログインしているユーザのページを表示するところに飛ぶ
-    else
-      render 'new' # 失敗した時の実装はまだ
+    #debugger
+    user = User.new(name: params[:name].downcase)
+    if user.save
+      user.login_status = 1
+      user.save
     end
+
+  ##  @user = User.new(user_params)
+  ##  if @user.save
+  ##    #ユーザをセーブ(新規登録?)できた時の処理を書く
+  ##    session[:user_id] = @user.id# 登録した際に，ログインするようにする
+  ##    redirect_to user_url(@user)   # ログインしているユーザのページを表示するところに飛ぶ
+  ##  else
+  ##    render 'new' # 失敗した時の実装はまだ
+  ##  end
   end
 
   private
