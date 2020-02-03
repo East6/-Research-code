@@ -86,7 +86,7 @@ app.get('/download',function (req,res){
   res.download(public_file);
 });
 
-http.listen(80, function () {//socket.ioを用いるために,「app」を「http」に変更
+http.listen(81, function () {//socket.ioを用いるために,「app」を「http」に変更
 });
 
 //ssh登録をするための関数(ssh2モジュール)
