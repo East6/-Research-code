@@ -96,10 +96,14 @@
                 //本当は  POSTリダイレクト がしたかった
                 //Sertification['name']  を 3000/login-status  に POST
                 location.href = 'http://10.0.2.42:3000/login-status'
-              }else if(Sertification_status == false){
+              }else if(Sertification_status == "no-privatekey"){
                 var status = document.getElementById('status');
                 status.insertAdjacentHTML('afterbegin', '秘密鍵(ユーザ名_rsa)を指定してください<br><br>');
                 alert('秘密鍵(ユーザ名_rsa)を指定してください');
+              }else if(Sertification_status == false){
+                var status = document.getElementById('status');
+                status.insertAdjacentHTML('afterbegin', '認証に失敗しました。ユーザ名,秘密鍵が不一致です。<br><br>');
+                alert('認証に失敗しました。ユーザ名,秘密鍵が不一致です。');
               }
             });
             //------------------サーバ側からssh認証通ったかの情報が送られてくるのを待つ
