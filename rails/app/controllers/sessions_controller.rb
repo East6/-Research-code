@@ -1,9 +1,22 @@
 class SessionsController < ApplicationController
+  skip_before_action :verify_authenticity_token # CSRFtokenでsessionを使っているので，切る
 
   def new
+    # 公開鍵暗号方式によるssh認証ページ(node.js)にリダイレクト
+    redirect_to 'http://10.0.2.42:80'
   end
 
+
   def create
+    #debugger
+    #user = User.find_by(name: params[:session][:name].downcase)
+    user = User.find_by(name: params[:name].downcase)
+    #debugger
+    user.login_status = 1
+    user.save
+    render 'new'
+
+    """
     user = User.find_by(email: params[:session][:email].downcase)
     #if user && user.authenticate(params[:session][:password])
     if user
@@ -14,6 +27,7 @@ class SessionsController < ApplicationController
       # ログイン失敗
       render 'new' #newアクション(singupuページをgetした時の処理)に行く {routeより}
     end
+    """
   end
 
   def destroy

@@ -6,6 +6,12 @@
   <!-- Client API を読み込む。自動生成されるので、socket.io.js を作成する必要はない。 -->
   <script src="/socket.io/socket.io.js"></script>
 </head>
+<header>
+  <div id='status'>
+  </div>
+</header>
+
+
 <body>
 
 
@@ -17,16 +23,49 @@
         } 
     </script>
 
+    <!-- ログインするときに-->
     <form name="myform">
-      <input name="myfile" type="file" />
+      <label>
+        ログインフォーム<br>
+        <label> 
+          ユーザ名：<input type="text" name="username" />
+        </label>
+        <br>
+        <label>
+          鍵指定：<input name="myfile" type="file" />
+        </label>
+      </label>
     </form>
-    
+
+
+    <br>
+    <br>
+    <!--新規登録するときに--> 
+    <p>
+      新規登録なら<a href="http://10.0.2.42:81/">ここ</a>
+    </p>
+
+    <!-- ログインするときに-->
     <script>
+
+      //デバッグ----------------------------
+      // ループで処理を見る
+      function roop(){
+        var tasikame_textfile = document.forms.myform.username.value
+        console.log(tasikame_textfile);
+        setTimeout('roop();', 1500);
+      }
+      setTimeout('roop();', 1500);  
+      //デバッグ----------------------------
+
+
       //Form要素を取得する
       var form = document.forms.myform;
       //ファイルが読み込まれた時の処理
       form.myfile.addEventListener('change', function(e) {
         var result = e.target.files[0];
+        //先にユーザ名を書いて,ファイルを選んでいると仮定する。
+        var username = document.forms.myform.username.value
 
         //FileReaderのインスタンスを作成する
         var reader = new FileReader();
@@ -39,15 +78,44 @@
             var data = reader.result
 
             //-------------------- サーバ側に通信するプログラム
-            // 通信先のサーバを指定する
-            var socket = io('10.0.2.42');
+            // 通信先のサーバを指定する(このプログラムが動いているサーバを指定)
+            //var socket = io('10.0.2.42');
+            var socket = io('http://10.0.2.42:80');
             //サーバに秘密鍵を送る
-            socket.emit('SSH PrivateKey', { PrivateKey: reader.result });
+            socket.emit('SSH PrivateKey', { PrivateKey: reader.result , name: username});
             //-------------------- サーバ側に通信するプログラム
+
+            //------------------サーバ側からssh認証通ったかの情報が送られてくるのを待つ
+            socket.on('SSH Sertification status', function(data){
+              var Sertification = data;
+              var Sertification_status = Sertification['SSH_Sertification_status']
+              console.log(Sertification)
+              console.log("認証の結果は" + Sertification_status)
+              if(Sertification_status == true){
+                alert(Sertification['name'] + '認証に成功しました')
+                //本当は  POSTリダイレクト がしたかった
+                //Sertification['name']  を 3000/login-status  に POST
+                location.href = 'http://10.0.2.42:3000/login-status'
+              }else if(Sertification_status == "no-privatekey"){
+                var status = document.getElementById('status');
+                status.insertAdjacentHTML('afterbegin', '秘密鍵(ユーザ名_rsa)を指定してください<br><br>');
+                alert('秘密鍵(ユーザ名_rsa)を指定してください');
+              }else if(Sertification_status == false){
+                var status = document.getElementById('status');
+                status.insertAdjacentHTML('afterbegin', '認証に失敗しました。ユーザ名,秘密鍵が不一致です。<br><br>');
+                alert('認証に失敗しました。ユーザ名,秘密鍵が不一致です。');
+              }
+            });
+            //------------------サーバ側からssh認証通ったかの情報が送られてくるのを待つ
+
+            //var redirect_url = 'http://localhost:3000'
+            //location.href = redirect_url;
         })
 
       })
   </script>
+
+
 
 </body>
 </html>
