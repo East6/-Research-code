@@ -34,6 +34,7 @@ io.on('connection', function (socket) {
   socket.on('SSH PrivateKey', function (data) {
     privatekey_data = data;
     console.log(privatekey_data);
+    console.log("-----------------------------------ユーザ名を送ったけど,取れるかな-------------------")
     // ssh認証を行う
     try{
       SSH_Sertification();
@@ -83,7 +84,7 @@ function SSH_Sertification(){
     }).connect({
       host: '10.0.2.53',
       port: 22,
-      username: 'ie-user',
+      username: privatekey_data['name'],
       privateKey: privatekey_data['PrivateKey']
     });  
 }
