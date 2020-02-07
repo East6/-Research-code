@@ -7,3 +7,6 @@ rails/log/*
 
 # 一時的な秘密鍵をgitに含めない
 node_js/temporary_key/
+
+# データベースの内容を共有しないようにする
+/db/*.sqlite3
