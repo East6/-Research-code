@@ -36,6 +36,7 @@
       $.cookie('redirect','false')
       console.log('---------------redirectします-------------');
       //location.href='http://10.0.2.42:3000/login-status'
+      alert( $.cookie('username')+ " で新規登録できました。\n" + $.cookie('username')+ " の鍵をダウンロードしました。")
       location.href='http://10.0.2.42:80'
     }else{
       //1.5秒まって，,redirect関数を再帰的に実行する
