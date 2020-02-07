@@ -33,6 +33,8 @@ class SessionsController < ApplicationController
   def destroy
     # ログイン保持状態のセッションを切る
     session.delete(:user_id)
-    render 'new' # ログイン(signup)ページをgetする(ログインページを開く)
+    # 公開鍵暗号方式によるssh認証ページ(node.js)にリダイレクト
+    redirect_to 'http://10.0.2.42:80'
+    #render 'new' # ログイン(signup)ページをgetする(ログインページを開く)
   end
 end
