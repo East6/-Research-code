@@ -9,4 +9,4 @@ rails/log/*
 node_js/temporary_key/
 
 # データベースの内容を共有しないようにする
-/db/*.sqlite3
+rails/db/*.sqlite3
